@@ -1,16 +1,24 @@
 ﻿using GitHubChangelogGeneratorLib.Models.ChangelogGenerator;
 using GitHubChangelogGeneratorLib.Models.GitHub;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace GitHubChangelogGeneratorLib.templates
 {
-    public class DefaultTemplate
+    public class DayTemplate
     {
-        private List<ChangelogCommit> TemplateContent;
         private ChangelogSettings Settings;
+        private List<ChangelogCommit> TemplateContent;
         private List<GitHubLabel> AllGitHubLabels;
+
+        public DayTemplate(ChangelogSettings settings, List<ChangelogCommit> templateContent, List<GitHubLabel> allGitHubLabels)
+        {
+            Settings = settings;
+            TemplateContent = templateContent;
+            AllGitHubLabels = allGitHubLabels;
+        }
 
         public string GenerateContent()
         {
@@ -60,6 +68,7 @@ ul.timeline > li:before {
 }
 .entry {
     display: block;
+    padding: 2px;
 }
 .issueId {
     color: #ccc;
@@ -73,32 +82,49 @@ ul.timeline > li:before {
 </html>
 ";
             html = html.Replace("{{CAPTION}}", Settings.Caption);
-
             var sb = new StringBuilder();
             sb.AppendLine("<ul class='timeline'>");
 
-            foreach(var commit in TemplateContent)
+            var commitDays = new List<CommitsPerDateTime>();
+            foreach (var commit in TemplateContent)
+            {
+                var foundDay = commitDays.SingleOrDefault(c => c.Date == commit.Date.Date);
+                if (foundDay == null)
+                    commitDays.Add(new CommitsPerDateTime
+                    {
+                        Date = commit.Date.Date,
+                        Commits = new List<ChangelogCommit>() { commit }
+                    });
+                else
+                    foundDay.Commits.Add(commit);
+            }
+
+            foreach (var day in commitDays)
             {
                 var wasAdded = false;
                 var subSb = new StringBuilder();
                 subSb.AppendLine("<li>");
                 subSb.AppendLine("<p>");
-                foreach(var label in AllGitHubLabels.Where(c => c.Name != Settings.ChangelogLabel).ToList())
+                subSb.AppendLine($"<strong>Changelog {day.Date:dd.MM.yyyy}</strong>");
+
+                foreach (var commit in day.Commits)
                 {
-                    var issues = commit.Issues.Where(c => c.Labels.Any(d => d.Name == label.Name)).ToList();
-                    if (issues.Count > 0)
+                    foreach (var label in AllGitHubLabels.Where(c => c.Name.ToLower() != Settings.ChangelogLabel.ToLower()).ToList())
                     {
-                        foreach(var issue in issues)
+                        var issues = commit.Issues.Where(c => c.Labels.Any(d => d.Name.ToLower() == label.Name.ToLower())).ToList();
+                        if (issues.Count > 0)
                         {
-                            if (issue.Labels.Any(c => c.Name == Settings.ChangelogLabel))
+                            foreach (var issue in issues)
                             {
-                                subSb.AppendLine($"<div class='entry'><span class='badge' style='background-color: #{label.Color};'>{label.Name}</span> {issue.Caption} <span class='issueId'>(#{issue.Number}, {commit.Date.ToString("dd.MM.yyyy HH:mm")})</span></div>");
-                                wasAdded = true;
+                                if (issue.Labels.Any(c => c.Name.ToLower() == Settings.ChangelogLabel.ToLower()))
+                                {
+                                    subSb.AppendLine($"<div class='entry'><span class='badge' style='background-color: #{label.Color};'>{label.Name}</span> {issue.Caption} <span class='issueId'>(#{issue.Number})</span></div>");
+                                    wasAdded = true;
+                                }
+
                             }
-                            
                         }
                     }
-                    
                 }
                 subSb.AppendLine("</p>");
                 subSb.AppendLine("</li>");
@@ -107,18 +133,16 @@ ul.timeline > li:before {
                     sb.Append(subSb);
             }
 
+
             sb.AppendLine("</ul>");
-
             html = html.Replace("{{TABLE}}", sb.ToString());
-
             return html;
         }
+    }
 
-        public DefaultTemplate(ChangelogSettings settings, List<ChangelogCommit> templateContent, List<GitHubLabel> allGitHubLabels)
-        {
-            TemplateContent = templateContent;
-            Settings = settings;
-            AllGitHubLabels = allGitHubLabels;
-        }
+    public class CommitsPerDateTime
+    {
+        public DateTime Date { get; set; }
+        public List<ChangelogCommit> Commits { get; set; }
     }
 }
