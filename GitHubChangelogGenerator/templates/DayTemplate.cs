@@ -68,15 +68,21 @@ ul.timeline > li:before {
 }
 .entry {
     display: block;
-    padding: 2px;
+    padding: 4px;
 }
 .issueId {
     color: #ccc;
 }
+.caption {
+    margin-left: 25px;
+}
+.badge {
+    margin-right: 10px;
+}
 </style>
 </head>
 <body>
-    <h2>{{CAPTION}}</h2>
+    <h2 class='caption'>{{CAPTION}}</h2>
     {{TABLE}}
 </body>
 </html>
