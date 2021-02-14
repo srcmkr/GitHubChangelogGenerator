@@ -11,4 +11,5 @@ GITREPOSITORY | yes | "GitHubChangelogGenerator" | The name of the repository yo
 BRANCH | yes | "main" | The selected branch (should be a branch with multiple commits per release like main)
 CHANGELOGNAME" | yes | "Github Changelog Generator" | This is the page title and caption in front of the changes
 CHANGELOGLABEL | yes | "changelog" | Only issues tagged with this label will appear in changelog
+CHANGELOGPUBLISHLABELS | yes | "enhancement,documentation,bug" | Set labels to show in changelog (in specific order)
 PAT | no | "abcdefghijklmnopqrstuvwxyz1234567890abcde" | If repository needs authorization, a PAT (personal access token) is required

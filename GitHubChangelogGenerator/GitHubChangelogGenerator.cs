@@ -11,25 +11,22 @@ using System.Threading.Tasks;
 
 namespace GitHubChangelogGeneratorLib
 {
-    public enum ChangelogTemplate
-    {
-        Default
-    }
-
     public class GitHubChangelogGenerator
     {
         private GitHubRepository Repository { get; set; }
         private GitHubPATAuthentification PatAuth { get; set; }
         private List<GitHubLabel> AllGitHubLabels { get; set; }
         private List<GitHubIssue> AllGitHubIssues { get; set; }
-        private ChangelogSettings Settings {get;set;}
+        private ChangelogSettings Settings { get; set; }
 
         private HttpClient Client { get; set; }
 
         public GitHubChangelogGenerator(ChangelogSettings settings, GitHubRepository repository, GitHubPATAuthentification patAuth = null)
         {
-            Client = new HttpClient();
-            Client.BaseAddress = new Uri("https://api.github.com");
+            Client = new HttpClient
+            {
+                BaseAddress = new Uri("https://api.github.com")
+            };
 
             Client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("GitHubChangelogGenerator", "1.0"));
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -83,18 +80,32 @@ namespace GitHubChangelogGeneratorLib
             var content = await getLabelsRequest.Content.ReadAsStringAsync();
 
             var allLabels = JsonConvert.DeserializeObject<List<GitHubLabel>>(content);
-            return allLabels;
+            var filteredLabels = new List<GitHubLabel>();
+
+            foreach(var changelogPublishLabel in Settings.ChangelogPublishLabels)
+            {
+                var labelToAdd = allLabels.SingleOrDefault(c => c.Name.ToLower() == changelogPublishLabel.ToLower());
+                if (labelToAdd != null)
+                    filteredLabels.Add(labelToAdd);
+            }
+
+            var changelogLabel = allLabels.SingleOrDefault(c => c.Name.ToLower() == Settings.ChangelogLabel.ToLower());
+            if (changelogLabel == null)
+                return default;
+            else filteredLabels.Add(changelogLabel);
+
+            return filteredLabels;
         }
 
         private List<ChangelogIssue> GetChangelogIssues()
         {
-            var changelogLabel = AllGitHubLabels.SingleOrDefault(c => c.Name.Equals(Settings.ChangelogLabel));
+            var changelogLabel = AllGitHubLabels.SingleOrDefault(c => c.Name.ToLower().Equals(Settings.ChangelogLabel.ToLower()));
             if (changelogLabel == null) return default;
 
             var changelogIssues = new List<ChangelogIssue>();
             foreach (var issue in AllGitHubIssues)
             {
-                if (issue.Labels.Any(c => c.Name == changelogLabel.Name))
+                if (issue.Labels.Any(c => c.Name.ToLower() == changelogLabel.Name.ToLower()))
                 {
                     changelogIssues.Add(new ChangelogIssue
                     {
@@ -104,7 +115,7 @@ namespace GitHubChangelogGeneratorLib
                         Description = issue.Body
                     });
                 }
-                
+
             }
 
             return changelogIssues;
@@ -120,51 +131,55 @@ namespace GitHubChangelogGeneratorLib
 
             var changelogCommits = new List<ChangelogCommit>();
             var githubCommits = await GetAllCommits();
-            if (githubCommits != null) {
-            foreach (var commit in githubCommits)
+            if (githubCommits != null)
             {
-                var changelogCommit = new ChangelogCommit
+                foreach (var commit in githubCommits)
                 {
-                    Id = commit.GetShortHash(),
-                    Message = commit.GetCommitMessage(),
-                    Issues = new List<ChangelogIssue>(),
-                    Date = commit.Commit.Committer.Date,
-                };
-
-                var issueIds = commit.GetIssueIds();
-                foreach (var issueId in issueIds)
-                {
-                    var issueToAdd = AllGitHubIssues.SingleOrDefault(c => c.Number == issueId);
-                    if (issueToAdd != null)
+                    var changelogCommit = new ChangelogCommit
                     {
-                        var changelogIssueToAdd = new ChangelogIssue
+                        Id = commit.GetShortHash(),
+                        Message = commit.GetCommitMessage(),
+                        Issues = new List<ChangelogIssue>(),
+                        Date = commit.Commit.Committer.Date,
+                    };
+
+                    var issueIds = commit.GetIssueIds();
+                    foreach (var issueId in issueIds)
+                    {
+                        var issueToAdd = AllGitHubIssues.SingleOrDefault(c => c.Number == issueId);
+                        if (issueToAdd != null)
                         {
-                            Number = issueToAdd.Number,
-                            Caption = issueToAdd.Title,
-                            Description = issueToAdd.Body,
-                            Labels = issueToAdd.Labels
-                        };
+                            var changelogIssueToAdd = new ChangelogIssue
+                            {
+                                Number = issueToAdd.Number,
+                                Caption = issueToAdd.Title,
+                                Description = issueToAdd.Body,
+                                Labels = issueToAdd.Labels
+                            };
 
-                        changelogCommit.Issues.Add(changelogIssueToAdd);
+                            changelogCommit.Issues.Add(changelogIssueToAdd);
+                        }
                     }
-                }
 
-                changelogCommits.Add(changelogCommit);
-            }
+                    changelogCommits.Add(changelogCommit);
+                }
             }
 
             return changelogCommits;
         }
 
-        public async Task<string> CreateHtmlTemplate(ChangelogTemplate template = ChangelogTemplate.Default)
+        public async Task<string> CreateHtmlTemplate(string template = "default")
         {
             var templateContent = await GetChangelogCommits();
 
-            switch(template)
+            switch (template.ToLower())
             {
+                case "day":
+                    var dayEngine = new DayTemplate(Settings, templateContent, AllGitHubLabels);
+                    return dayEngine.GenerateContent();
                 default:
-                    var templateEngine = new DefaultTemplate(Settings, templateContent, AllGitHubLabels);
-                    return templateEngine.GenerateContent();
+                    var defaultEngine = new DefaultTemplate(Settings, templateContent, AllGitHubLabels);
+                    return defaultEngine.GenerateContent();
             }
         }
     }

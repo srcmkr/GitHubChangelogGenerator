@@ -2,6 +2,7 @@
 using GitHubChangelogGeneratorLib.Models.ChangelogGenerator;
 using GitHubChangelogGeneratorLib.Models.GitHub;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GitHubChangelogGeneratorDocker
@@ -25,10 +26,11 @@ namespace GitHubChangelogGeneratorDocker
             var settings = new ChangelogSettings
             {
                 Caption = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGNAME"),
-                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL")
+                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL").ToLower(),
+                ChangelogPublishLabels = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGPUBLISHLABELS").ToLower().Split(',').ToList()
             };
 
-            var htmlFileContent = await new GitHubChangelogGenerator(settings, repo, creds).CreateHtmlTemplate();
+            var htmlFileContent = await new GitHubChangelogGenerator(settings, repo, creds).CreateHtmlTemplate(EnvironmentHelper.GetEnvironmentVariable("TEMPLATE").ToLower());
             File.WriteAllText("data/output.html", htmlFileContent);
         }
     }
