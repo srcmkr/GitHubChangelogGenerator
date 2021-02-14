@@ -25,8 +25,7 @@ namespace GitHubChangelogGeneratorDocker
             var settings = new ChangelogSettings
             {
                 Caption = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGNAME"),
-                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL"),
-                IncludeOpenIssues = !string.IsNullOrEmpty(EnvironmentHelper.GetEnvironmentVariable("INCLUDEOPENISSUES"))
+                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL")
             };
 
             var htmlFileContent = await new GitHubChangelogGenerator(settings, repo, creds).CreateHtmlTemplate();

@@ -65,11 +65,7 @@ namespace GitHubChangelogGeneratorLib
 
         private async Task<List<GitHubIssue>> GetAllIssues()
         {
-            HttpResponseMessage getIssuesRequest;
-            if (Settings.IncludeOpenIssues)
-                getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues");
-            else
-                getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues?state=closed");
+            var getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues?state=all");
 
             if (!getIssuesRequest.IsSuccessStatusCode) return default;
 
