@@ -2,4 +2,9 @@
 # Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
 ################################################################################
 
-/.vs/GitHubChangelogGenerator/v16
+/.vs
+/GitHubChangelogGenerator/bin
+/GitHubChangelogGenerator/obj
+/GitHubChangelogGeneratorTest/bin
+/GitHubChangelogGeneratorTest/obj
+/GitHubChangelogGeneratorTest/Properties

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubChangelogGeneratorLib", "GitHubChangelogGenerator\GitHubChangelogGeneratorLib.csproj", "{928B305E-7321-4FC2-AFAC-EF41205F3ABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubChangelogGeneratorDocker", "GitHubChangelogGeneratorTest\GitHubChangelogGeneratorDocker.csproj", "{F6F6EC5E-9998-49D4-90C8-FC74C3AEBEDB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{928B305E-7321-4FC2-AFAC-EF41205F3ABE} = {928B305E-7321-4FC2-AFAC-EF41205F3ABE}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{928B305E-7321-4FC2-AFAC-EF41205F3ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{928B305E-7321-4FC2-AFAC-EF41205F3ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{928B305E-7321-4FC2-AFAC-EF41205F3ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{928B305E-7321-4FC2-AFAC-EF41205F3ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F6EC5E-9998-49D4-90C8-FC74C3AEBEDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F6EC5E-9998-49D4-90C8-FC74C3AEBEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F6EC5E-9998-49D4-90C8-FC74C3AEBEDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F6EC5E-9998-49D4-90C8-FC74C3AEBEDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04A42CB0-6B35-4295-B8B7-5849D05BA34C}
+	EndGlobalSection
+EndGlobal
