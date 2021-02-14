@@ -19,7 +19,7 @@ TEMPLATE | "day" or "default" | Template to use for changelog
 PAT |"abcdefghijklmnopqrstuvwxyz1234567890abcde" | If repository needs authorization, a PAT (personal access token) is required
 
 ## Full example for 
-```docker run -v C:\test:/app/data -e CHANGELOGNAME="Github Changelog Generator" -e CHANGELOGLABEL=changelog -e BRANCH=master -e CHANGELOGPUBLISHLABELS="enhancement,documentation,bug" -e PAT="YOURPERSONALACCESSTOKEN" -e GITUSERNAME=srcmkr -e GITREPOSITORY=GitHubChangelogGenerator -e TEMPLATE=day srcmkr/githubchangeloggeneratordocker```
+```docker run --rm -v C:\test:/app/data -e CHANGELOGNAME="Github Changelog Generator" -e CHANGELOGLABEL=changelog -e BRANCH=master -e CHANGELOGPUBLISHLABELS="enhancement,documentation,bug" -e PAT="YOURPERSONALACCESSTOKEN" -e GITUSERNAME=srcmkr -e GITREPOSITORY=GitHubChangelogGenerator -e TEMPLATE=day srcmkr/githubchangeloggeneratordocker```
 
 **Where to create a personal access token?**  
 There you are: https://github.com/settings/tokens
