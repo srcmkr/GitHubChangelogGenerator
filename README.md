@@ -1,6 +1,6 @@
 # GitHubChangelogGenerator
 
-This project generates a nice-looking html changelog for your github projects.  
+This project generates a nice-looking html changelog for your github projects. 
 
 ## Available environment variables to use, docker, etc.:
 
