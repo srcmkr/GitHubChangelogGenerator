@@ -124,6 +124,7 @@ namespace GitHubChangelogGeneratorLib
 
             var changelogCommits = new List<ChangelogCommit>();
             var githubCommits = await GetAllCommits();
+            if (githubCommits != null) {
             foreach (var commit in githubCommits)
             {
                 var changelogCommit = new ChangelogCommit
@@ -153,6 +154,7 @@ namespace GitHubChangelogGeneratorLib
                 }
 
                 changelogCommits.Add(changelogCommit);
+            }
             }
 
             return changelogCommits;
