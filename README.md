@@ -2,7 +2,7 @@
 
 This project generates a nice-looking html changelog for your github projects:  
   
-![Date Template](https://raw.githubusercontent.com/srcmkr/GitHubChangelogGenerator/dev/docs/day-template.PNG)  
+![Date Template](https://raw.githubusercontent.com/srcmkr/GitHubChangelogGenerator/master/docs/day-template.PNG)  
 How this was generated: https://github.com/srcmkr/GitHubChangelogGenerator/issues?q=is%3Aissue+is%3Aclosed
 
 ## Required environment variables to use, docker, etc.:
