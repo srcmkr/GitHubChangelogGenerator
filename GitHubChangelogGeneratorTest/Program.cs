@@ -6,7 +6,6 @@ namespace GitHubChangelogGeneratorDocker
     {
         static async Task Main(string[] args)
         {
-            var gcgt = new GcgTest();
             await GcgTest.Test();
         }
     }

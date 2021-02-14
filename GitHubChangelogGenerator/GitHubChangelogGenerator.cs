@@ -65,11 +65,7 @@ namespace GitHubChangelogGeneratorLib
 
         private async Task<List<GitHubIssue>> GetAllIssues()
         {
-            HttpResponseMessage getIssuesRequest;
-            if (Settings.IncludeOpenIssues)
-                getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues");
-            else
-                getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues?state=closed");
+            var getIssuesRequest = await Client.GetAsync($"/repos/{Repository.Username}/{Repository.Repository}/issues?state=all");
 
             if (!getIssuesRequest.IsSuccessStatusCode) return default;
 
@@ -124,6 +120,7 @@ namespace GitHubChangelogGeneratorLib
 
             var changelogCommits = new List<ChangelogCommit>();
             var githubCommits = await GetAllCommits();
+            if (githubCommits != null) {
             foreach (var commit in githubCommits)
             {
                 var changelogCommit = new ChangelogCommit
@@ -153,6 +150,7 @@ namespace GitHubChangelogGeneratorLib
                 }
 
                 changelogCommits.Add(changelogCommit);
+            }
             }
 
             return changelogCommits;
