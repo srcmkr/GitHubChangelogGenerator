@@ -107,9 +107,9 @@ ul.timeline > li:before {
                 subSb.AppendLine("<p>");
                 subSb.AppendLine($"<strong>Changelog {day.Date:dd.MM.yyyy}</strong>");
 
-                foreach (var commit in day.Commits)
+                foreach (var label in AllGitHubLabels.Where(c => c.Name.ToLower() != Settings.ChangelogLabel.ToLower()).ToList())
                 {
-                    foreach (var label in AllGitHubLabels.Where(c => c.Name.ToLower() != Settings.ChangelogLabel.ToLower()).ToList())
+                    foreach (var commit in day.Commits)
                     {
                         var issues = commit.Issues.Where(c => c.Labels.Any(d => d.Name.ToLower() == label.Name.ToLower())).ToList();
                         if (issues.Count > 0)

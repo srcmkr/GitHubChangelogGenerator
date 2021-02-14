@@ -80,13 +80,19 @@ namespace GitHubChangelogGeneratorLib
             var content = await getLabelsRequest.Content.ReadAsStringAsync();
 
             var allLabels = JsonConvert.DeserializeObject<List<GitHubLabel>>(content);
-
             var filteredLabels = new List<GitHubLabel>();
-            foreach(var label in allLabels)
+
+            foreach(var changelogPublishLabel in Settings.ChangelogPublishLabels)
             {
-                if (Settings.ChangelogPublishLabels.Contains(label.Name.ToLower()) || label.Name.ToLower() == Settings.ChangelogLabel.ToLower())
-                    filteredLabels.Add(label);
+                var labelToAdd = allLabels.SingleOrDefault(c => c.Name.ToLower() == changelogPublishLabel.ToLower());
+                if (labelToAdd != null)
+                    filteredLabels.Add(labelToAdd);
             }
+
+            var changelogLabel = allLabels.SingleOrDefault(c => c.Name.ToLower() == Settings.ChangelogLabel.ToLower());
+            if (changelogLabel == null)
+                return default;
+            else filteredLabels.Add(changelogLabel);
 
             return filteredLabels;
         }

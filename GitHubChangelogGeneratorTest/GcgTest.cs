@@ -30,7 +30,7 @@ namespace GitHubChangelogGeneratorDocker
                 ChangelogPublishLabels = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGPUBLISHLABELS").ToLower().Split(',').ToList()
             };
 
-            var htmlFileContent = await new GitHubChangelogGenerator(settings, repo, creds).CreateHtmlTemplate("day");
+            var htmlFileContent = await new GitHubChangelogGenerator(settings, repo, creds).CreateHtmlTemplate(EnvironmentHelper.GetEnvironmentVariable("TEMPLATE").ToLower());
             File.WriteAllText("data/output.html", htmlFileContent);
         }
     }

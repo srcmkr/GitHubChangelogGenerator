@@ -83,16 +83,16 @@ ul.timeline > li:before {
                 var subSb = new StringBuilder();
                 subSb.AppendLine("<li>");
                 subSb.AppendLine("<p>");
-                foreach(var label in AllGitHubLabels.Where(c => c.Name != Settings.ChangelogLabel).ToList())
+                foreach(var label in AllGitHubLabels.Where(c => c.Name != Settings.ChangelogLabel.ToLower()).ToList())
                 {
-                    var issues = commit.Issues.Where(c => c.Labels.Any(d => d.Name == label.Name)).ToList();
+                    var issues = commit.Issues.Where(c => label.Name.ToLower() != Settings.ChangelogLabel.ToLower() && c.Labels.Any(d => d.Name.ToLower() == label.Name.ToLower())).ToList();
                     if (issues.Count > 0)
                     {
                         foreach(var issue in issues)
                         {
-                            if (issue.Labels.Any(c => c.Name == Settings.ChangelogLabel))
+                            if (issue.Labels.Any(c => c.Name.ToLower() == Settings.ChangelogLabel.ToLower()))
                             {
-                                subSb.AppendLine($"<div class='entry'><span class='badge' style='background-color: #{label.Color};'>{label.Name}</span> {issue.Caption} <span class='issueId'>(#{issue.Number}, {commit.Date.ToString("dd.MM.yyyy HH:mm")})</span></div>");
+                                subSb.AppendLine($"<div class='entry'><span class='badge' style='background-color: #{label.Color};'>{label.Name}</span> {issue.Caption} <span class='issueId'>(#{issue.Number}, {commit.Date.ToString("dd.MM.yyyy")})</span></div>");
                                 wasAdded = true;
                             }
                             
