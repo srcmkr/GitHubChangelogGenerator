@@ -26,7 +26,7 @@ namespace GitHubChangelogGeneratorDocker
             var settings = new ChangelogSettings
             {
                 Caption = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGNAME"),
-                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL"),
+                ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL").ToLower(),
                 ChangelogPublishLabels = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGPUBLISHLABELS").ToLower().Split(',').ToList()
             };
 
