@@ -17,11 +17,21 @@ namespace GitHubChangelogGeneratorDocker
                 Username = EnvironmentHelper.GetEnvironmentVariable("GITUSERNAME"),
                 Repository = EnvironmentHelper.GetEnvironmentVariable("GITREPOSITORY")
             };
+            if (string.IsNullOrEmpty(repo.Branch) || string.IsNullOrEmpty(repo.Username) || string.IsNullOrEmpty(repo.Repository))
+            {
+                System.Console.WriteLine("Error: Please provide Branch, Username and Repository");
+                return;
+            }
 
             var creds = new GitHubPATAuthentification
             {
                 PersonalAccessToken = EnvironmentHelper.GetEnvironmentVariable("PAT")
             };
+            if (string.IsNullOrEmpty(creds.PersonalAccessToken))
+            {
+                System.Console.WriteLine("Error: Please provide PAT (personal access token)");
+                return;
+            }
 
             var settings = new ChangelogSettings
             {
@@ -29,6 +39,11 @@ namespace GitHubChangelogGeneratorDocker
                 ChangelogLabel = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGLABEL").ToLower(),
                 ChangelogPublishLabels = EnvironmentHelper.GetEnvironmentVariable("CHANGELOGPUBLISHLABELS").ToLower().Split(',').ToList()
             };
+
+            if (string.IsNullOrEmpty(settings.Caption) || string.IsNullOrEmpty(settings.ChangelogLabel) || settings.ChangelogPublishLabels.Count <= 0)
+            {
+                System.Console.WriteLine("Error: Please provice Changelogname, Changeloglabel and Changelogpublishlabels");
+            }
 
             System.Console.WriteLine(@"
  _____ _ _   _   _       _     _____ _                            _             
